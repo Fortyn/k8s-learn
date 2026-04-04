@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: songs-app
+  labels:
+    app: songs-app
+  namespace: k8s-program
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: songs-app
+  template:
+    metadata:
+      name: songs-app
+      labels:
+        app: songs-app
+    spec:
+      containers:
+        - name: songs-app
+          image: songs-image:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          env:
+            - name: SONGS_DB_URL
+              value: songs-db-service
+            - name: SONGS_DB_PORT
+              value: "5432"
+          volumeMounts:
+            - mountPath: /mnt/data
+              name: songs-pv-storage
+      restartPolicy: Always
+      volumes:
+        - name: songs-pv-storage
+          persistentVolumeClaim:
+            claimName: songs-pvc
+
+      
