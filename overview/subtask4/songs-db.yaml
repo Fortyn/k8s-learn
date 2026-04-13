@@ -22,7 +22,7 @@ spec:
   selector:
     matchLabels:
       app: songs-db # has to match .spec.template.metadata.labels
-  serviceName: "resource-db-service"
+  serviceName: "song-db-service"
   replicas: 1 # by default is 1
   minReadySeconds: 10 # by default is 0
   template:
