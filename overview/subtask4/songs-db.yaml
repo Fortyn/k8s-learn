@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: songs-db-service
+  labels:
+    app: songs-db
+  namespace: k8s-program
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      protocol: TCP
+  selector:
+    app: songs-db
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: songs-db
+  namespace: k8s-program
+spec:
+  selector:
+    matchLabels:
+      app: songs-db # has to match .spec.template.metadata.labels
+  serviceName: "song-db-service"
+  replicas: 1 # by default is 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: songs-db # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: songs-db
+          image: postgres:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - name: songs-db-volume-claim
+              mountPath: /var/lib/postgresql
+          env:
+            - value: postgres
+              name: POSTGRES_PASSWORD
+  volumeClaimTemplates:
+    - metadata:
+        name: songs-db-volume-claim
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi
