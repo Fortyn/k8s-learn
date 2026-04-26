@@ -15,7 +15,7 @@ data:
   MANAGEMENT_HEALTH_PROBES_ENABLED: "true"
   LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB_SERVLET_DISPATCHERSERVLET: "DEBUG"
   song-ddl.sql: |
-    CREATE TABLE songs (
+    CREATE TABLE IF NOT EXISTS songs (
         id SERIAL PRIMARY KEY,
         name varchar(100) not null ,
         artist varchar(100) not null,
