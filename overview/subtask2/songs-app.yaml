@@ -18,16 +18,41 @@ spec:
     spec:
       containers:
         - name: songs-app
-          image: songs-image:latest
+          image: songs-image:2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8081
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: song-config
           env:
-            - name: SONGS_DB_URL
-              value: songs-db-service
-            - name: SONGS_DB_PORT
-              value: "5432"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-secret
+                  key: password
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: databases-secret
+                  key: username
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            periodSeconds: 10
+            failureThreshold: 20
           volumeMounts:
             - mountPath: /mnt/data
               name: songs-pv-storage

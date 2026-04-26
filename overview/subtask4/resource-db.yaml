@@ -41,9 +41,22 @@ spec:
           volumeMounts:
             - name: resource-db-volume-claim
               mountPath: /var/lib/postgresql
+            - name: resource-ddl
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
           env:
-            - value: postgres
-              name: POSTGRES_PASSWORD
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-secret
+                  key: password
+      volumes:
+        - name: resource-ddl
+          configMap:
+            name: resource-config
+            items:
+              - key: "resource-ddl.sql"
+                path: "resource-ddl.sql"
   volumeClaimTemplates:
     - metadata:
         name: resource-db-volume-claim

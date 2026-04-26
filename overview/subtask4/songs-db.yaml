@@ -41,9 +41,22 @@ spec:
           volumeMounts:
             - name: songs-db-volume-claim
               mountPath: /var/lib/postgresql
+            - name: song-ddl
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
           env:
-            - value: postgres
-              name: POSTGRES_PASSWORD
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-secret
+                  key: password
+      volumes:
+        - name: song-ddl
+          configMap:
+            name: song-config
+            items:
+              - key: "song-ddl.sql"
+                path: "song-ddl.sql"
   volumeClaimTemplates:
     - metadata:
         name: songs-db-volume-claim
