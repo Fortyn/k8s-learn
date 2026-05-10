@@ -4,7 +4,7 @@ metadata:
   name: songs-pv
   labels:
     role: songs-pv
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
 spec:
   storageClassName: manual
   capacity:
@@ -21,7 +21,7 @@ metadata:
   name: songs-pvc
   labels:
     role: songs-pvc
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
 spec:
   storageClassName: manual
   accessModes:

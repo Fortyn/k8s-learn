@@ -4,9 +4,9 @@ metadata:
   name: songs-app
   labels:
     app: songs-app
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: songs-app

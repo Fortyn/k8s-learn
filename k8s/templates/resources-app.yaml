@@ -4,14 +4,14 @@ metadata:
   name: resources-app
   labels:
     app: resources-app
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
 spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: resources-app
