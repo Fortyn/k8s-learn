@@ -40,10 +40,45 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: songs-db-volume-claim
-              mountPath: /var/lib/postgresql
+              mountPath: /var/lib/postgresql/data
+            - name: song-ddl
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
           env:
-            - value: postgres
-              name: POSTGRES_PASSWORD
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: databases-secret
+                  key: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: song-ddl
+          configMap:
+            name: song-config
+            items:
+              - key: "song-ddl.sql"
+                path: "song-ddl.sql"
   volumeClaimTemplates:
     - metadata:
         name: songs-db-volume-claim

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: song-config
+  namespace: k8s-program
+data:
+  SONGS_DB_URL: "songs-db-service"
+  SONGS_DB_PORT: "5432"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "none"
+  SPRING_JPA_GENERATE_DDL: "false"
+  MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+  MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED: "true"
+  MANAGEMENT_HEALTH_READINESSSTATE_ENABLED: "true"
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+  MANAGEMENT_HEALTH_PROBES_ENABLED: "true"
+  LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB_SERVLET_DISPATCHERSERVLET: "DEBUG"
+  song-ddl.sql: |
+    CREATE SEQUENCE IF NOT EXISTS songs_seq START WITH 1 INCREMENT BY 1;
+    CREATE TABLE IF NOT EXISTS songs (
+        id INT NOT NULL PRIMARY KEY DEFAULT nextval('songs_seq'),
+        name varchar(100) not null ,
+        artist varchar(100) not null,
+        album varchar(100) not null,
+        length varchar(100) not null,
+        resource_id int8 not null,
+        year varchar(100) not null,
+        genre varchar(100)
+    );
