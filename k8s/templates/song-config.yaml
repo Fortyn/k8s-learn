@@ -2,7 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: song-config
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{ include "k8s-chart.labels" . | nindent 4 }}
 data:
   SONGS_DB_URL: "songs-db-service"
   SONGS_DB_PORT: "5432"

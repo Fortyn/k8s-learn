@@ -2,7 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: resource-config
-  namespace: k8s-program
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{ include "k8s-chart.labels" . | nindent 4 }}
 data:
   RESOURCES_DB_URL: "resource-db-service"
   RESOURCES_DB_PORT: "5432"

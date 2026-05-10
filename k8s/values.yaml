@@ -1,0 +1,3 @@
+# Default values for k8s.
+replicaCount: 1
+namespace: k8s
